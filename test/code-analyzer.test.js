@@ -33,6 +33,10 @@ const code7 = 'function foo(x, y, z){\n' + '    let a = x + 1;\n' + '    let b =
 
 const dot7 = 'digraph cfg { forcelabels=true\n' + ' n0 [label="let a = x + 1\n' + 'let b = a + y\n' + 'let c = 0", xlabel=0, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n1 [label="b < z", xlabel=1, shape=diamond,style = filled, fillcolor = green ]\n' + ' n2 [label="c = c + 5", xlabel=2, shape=rectangle]\n' + ' n3 [label="c = 5", xlabel=3, shape=diamond]\n' + ' n4 [label="c = 0", xlabel=4, shape=rectangle]\n' + ' n5 [label="b = 3", xlabel=5, shape=diamond]\n' + ' n6 [label="b = 12", xlabel=6, shape=rectangle]\n' + ' n7 [label="return c", xlabel=7, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n8 [label="b < z * 2", xlabel=8, shape=diamond,style = filled, fillcolor = green ]\n' + ' n9 [label="c = c + x + 5", xlabel=9, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n10 [label="c = c + z + 5", xlabel=10, shape=rectangle]\n' + ' n0 -> n1 []\n' + ' n1 -> n2 [label="true"]\n' + ' n1 -> n8 [label="false"]\n' + ' n2 -> n3 []\n' + ' n3 -> n4 [label="true"]\n' + ' n3 -> n7 [label="false"]\n' + ' n4 -> n5 []\n' + ' n5 -> n6 [label="true"]\n' + ' n5 -> n7 [label="false"]\n' + ' n6 -> n7 []\n' + ' n8 -> n9 [label="true"]\n' + ' n8 -> n10 [label="false"]\n' + ' n9 -> n7 []\n' + ' n10 -> n7 []\n' + ' }';
 
+const code8 = 'function addArrays(arr1,arr2){\n' + '   let x= 0;\n' + '   let ans = [];\n' + '   while (x < arr1.length){\n' + '        let z = 3;\n' + '        ans.push(arr1[x]+arr1[2]);\n' + '        x++;\n' + '   }\n' + '   return ans;\n' + '}';
+
+const dot8 = 'digraph cfg { forcelabels=true\n' + ' n0 [label="let x = 0\n' + 'let ans = []", xlabel=0, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n1 [label="x < arr1.length", xlabel=1, shape=diamond,style = filled, fillcolor = green ]\n' + ' n2 [label="let z = 3\n' + 'ans.push(arr1[x] + arr1[2])\n' + 'x++", xlabel=2, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n3 [label="return ans", xlabel=3, shape=rectangle,style = filled, fillcolor = green ]\n' + ' n0 -> n1 []\n' + ' n1 -> n2 [label="true"]\n' + ' n1 -> n3 [label="false"]\n' + ' n2 -> n1 []\n' + ' }';
+
 describe('graph painter1', () => {
     it('graph painter1', () => {
         let parsedCode = parseCode(code1);
@@ -221,6 +225,21 @@ describe('graph dots7', () => {
             dotGraph
             ,
             dot7
+        );
+    });
+});
+
+
+describe('graph painter8', () => {
+    it('graph painter8', () => {
+        let parsedCode = parseCode(code8);
+        let cfg = esgraph(parsedCode['body'][0]['body']);
+        paintCfg(cfg,['let arr1 = [1,2,3];', 'let arr2 = [1,2,3];']);
+        let dotGraph = generateGraph(cfg);
+        assert.equal(
+            dotGraph
+            ,
+            dot8
         );
     });
 });

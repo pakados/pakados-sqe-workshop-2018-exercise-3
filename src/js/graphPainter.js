@@ -5,11 +5,19 @@ function paintCfg(cfg, valueMap) {
     paintNode(cfg[0].normal,valueMap);
 }
 
+function isDeceleration(code) {
+    return (code.includes('let') || (code.includes('var')));
+}
+
 function paintNode(node, valueMap) {
     if(node.type != 'exit' ){
         node.paint = true;
         if(node.normal){
-            valueMap.push(escodegen.generate(node.astNode)+';');
+            let codeToAdd = escodegen.generate(node.astNode);
+            if ( isDeceleration(codeToAdd)&& valueMap.includes(codeToAdd + ';')){
+                codeToAdd= codeToAdd.substring(3);
+            }
+            valueMap.push(codeToAdd+';');
             paintNode(node.normal,valueMap);
         }
         else{
